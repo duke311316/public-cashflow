@@ -248,6 +248,27 @@ public class CashFlow {
         return (double) Math.round(recurringPayment);
     }
 
-
+    public static Integer months2PayOffCardPrevBal(Double annualInterest, Double balance){
+        Double newBalance=0.0;
+        Double monthlyInterest = annualInterest/12;
+        Integer monthsTillPayOff=0;;
+        
+        while(balance > 0){
+            balance *=(1 + monthlyInterest);
+            if(balance < 20){
+                newBalance = 0.0;}
+            else if (balance > 20){
+                if(balance/10 < 20){
+                    newBalance = balance - 20;
+                }
+                else{
+                    newBalance = balance - balance *.1;
+                }
+            }    
+            balance = newBalance; 
+            monthsTillPayOff+=1;
+        }  
+        return monthsTillPayOff; 
+    }
 
 }
