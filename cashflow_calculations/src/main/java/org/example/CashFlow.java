@@ -218,7 +218,9 @@ public class CashFlow {
                 break;
             }
             default: {
+                scanner.close();
                 throw new Exception("The choice is invalid");
+                
             }
         }
         System.out.println("What is the MSRP?");
@@ -232,6 +234,7 @@ public class CashFlow {
 
         calculateLoanPresentValue();
         System.out.println(initialNetAmount);
+        scanner.close();
     }
     public static void printMenu(){
         System.out.println("Welcome!\n" +
