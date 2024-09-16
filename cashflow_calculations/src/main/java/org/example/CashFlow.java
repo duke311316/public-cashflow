@@ -78,9 +78,9 @@ public class CashFlow {
     public Double getInitialNetAmount () {
         return initialNetAmount;
     }
-    private void setInitialNetAmount (Double initialAmount) {
-        this.initialNetAmount = initialAmount;
-    }
+    // private void setInitialNetAmount (Double initialAmount) {
+    //     this.initialNetAmount = initialAmount;
+    // }
     public boolean isEqualPayments() {
         return equalPayments;
     }
@@ -90,9 +90,9 @@ public class CashFlow {
     public Double getRecurringPayment() {
         return recurringPayment;
     }
-    private void setRecurringPayment(Double recurringPayment) {
-        this.recurringPayment = recurringPayment;
-    }
+    // private void setRecurringPayment(Double recurringPayment) {
+    //     this.recurringPayment = recurringPayment;
+    // }
     public Integer getNumOfPeriods() {
         return numOfPeriods;
     }
