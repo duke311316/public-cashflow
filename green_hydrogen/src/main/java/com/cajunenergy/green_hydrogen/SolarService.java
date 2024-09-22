@@ -15,10 +15,11 @@ public class SolarService {
     private Double avgPanelEfficiencyPerDay = .219; //21.9% efficiency average (made-in-china.com)
     private Integer pricePemPerKw = 450;
     private Integer systemDailyWattage;
-    private Double tax_tariff;
+    private Double tax_tariff = 1.0;// set at 0 percentage
     final private Double milisInInch = 25.4;
     final private Integer inchInFoot = 12;
     final private Integer sqftInAcre = 43560;
+    private Double hydrogenDemanGrowthProjection = 1.05; // 5 percent year over year
 
     public Integer calculateSolarWattage (Integer goalKilogramsPerYear){
         Integer yearlyKilowattHoursNeeded = (int)((goalKilogramsPerYear * kilowattHoursPerKilogramOfStack));
@@ -31,8 +32,8 @@ public class SolarService {
     public Integer calculateNumberOfPanels(Integer wattsPerPanel){
         return systemDailyWattage/wattsPerPanel;
     }
-    public Integer calculateSolarPanelTotalPrice(Double pricePerWatt){
-        return (int)(systemDailyWattage * pricePerWatt);
+    public Double calculateSolarPanelTotalPrice(Double pricePerWatt, Integer dailywattageNeeds){
+        return (dailywattageNeeds * pricePerWatt);
     }
 
     public Integer calculateNeededSpaceForSolar (Integer panelWidth, Integer panelLength, Integer numberOfPanels, String unitOfMeasure){
@@ -48,6 +49,21 @@ public class SolarService {
     }
     public Integer calculateLandCost(Integer acreage, Integer pricePerAcre){
         return acreage * pricePerAcre;
+    }
+    public Double addTaxAndTariff(String countryOfOrigin){
+        Double percentage = 0.0;
+        switch (countryOfOrigin) {
+            case "China":{
+                percentage = .5;
+                break;
+            }
+            case "USA": {
+                percentage = .1;
+            }
+            default:
+                break;
+        }
+        return percentage;
     }
 
 
