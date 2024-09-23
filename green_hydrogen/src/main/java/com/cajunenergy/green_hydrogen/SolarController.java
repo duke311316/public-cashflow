@@ -3,6 +3,7 @@ package com.cajunenergy.green_hydrogen;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/solar")
+@CrossOrigin("http://localhost:3000")
 public class SolarController {
     @Autowired
     private SolarService solarService;
@@ -36,16 +38,18 @@ public class SolarController {
             // Integer electrolyzerLifespanInYears = solarService.calculateElectrolyzerLifespaninYears(solarPanelCostrequest.getTypeOfElectrolyzer());
 
 
-            
+
             String response = "The different components of the solar hydrogen plant cost are as follows: \n" +
             "Cost of Solar Panels: $" + costOfPanelsIncludingTaxAndTariff + "\n" +
             "Cost of Panel Connections: $" + panelConnectionCostIncludingTaxAndTariff + "\n" +
             "Cost of Acreage: $" + totalAcreageCost + "\n" +
             "Cost of Electrolyzers: $" + costOfElectrolyzersIncludingTaxAndTariff + "\n" +
             "Total Cost: $" + totalCost;
-            return ResponseEntity.ok(response);//change the argument with proper value later.
+            return ResponseEntity.ok(response);
+            // return ResponseEntity.ok(response);//change the argument with proper value later.
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.badRequest().body(null);
+            // ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
     }

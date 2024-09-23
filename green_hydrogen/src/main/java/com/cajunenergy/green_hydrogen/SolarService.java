@@ -197,6 +197,11 @@ public class SolarService {
         return costOfElectrolyzers;
     }
 
+    /**
+     * calculateElectrolyzerLifespaninYears
+     * @param typeOfElectrolyzer
+     * @return Integer lifespan of electrolyzer in years
+     */
     public Integer calculateElectrolyzerLifespaninYears( String typeOfElectrolyzer){
         Integer daysOfRunTime = 0;
         switch(typeOfElectrolyzer){
@@ -222,7 +227,7 @@ public class SolarService {
     //     return 0;
     // }
 
-    
+
 
 
 
