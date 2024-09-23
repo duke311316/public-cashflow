@@ -167,26 +167,26 @@ public class SolarService {
         Integer goalKilogramsPerHour = goalKilogramInFirstYear/(daysPerYear * hoursPerDay);
         Integer kilowattsPerHourNeeded = 0;
         // Double degradationRatePer1000Hours = 0.0;
-        Integer hoursOfRunTime = 0;
+        // Integer hoursOfRunTime = 0;
         
         switch(typeOfElectrolyzer){
             case "PEM":
                 costPerKw = costPemElecPerKw;
                 // degradationRatePer1000Hours = pemDegradeRate;
                 kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfPemStack;
-                hoursOfRunTime = pemHoursToEndOfLife;
+                // hoursOfRunTime = pemHoursToEndOfLife;
                 break;
             case "Alkaline":
                 costPerKw = costAlkaElecPerKw;
                 // degradationRatePer1000Hours = alkalineDegradeRate;
                 kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfAlkalineStack;
-                hoursOfRunTime = alkalineHoursToEndOfLife;
+                // hoursOfRunTime = alkalineHoursToEndOfLife;
                 break;
             case "SOEC":
                 costPerKw = costSoecElecPerKw;
                 // degradationRatePer1000Hours = soecDegradeRate;
                 kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfSoecStack;
-                hoursOfRunTime = soecHoursOfToEndOfLife;
+                // hoursOfRunTime = soecHoursOfToEndOfLife;
                 break;
             default:
                 break;
@@ -197,6 +197,23 @@ public class SolarService {
         return costOfElectrolyzers;
     }
 
+    public Integer calculateElectrolyzerLifespaninYears( String typeOfElectrolyzer){
+        Integer daysOfRunTime = 0;
+        switch(typeOfElectrolyzer){
+            case "PEM":
+                daysOfRunTime = pemHoursToEndOfLife / hoursPerDay;
+                break;
+            case "Alkaline":
+                daysOfRunTime = alkalineHoursToEndOfLife / hoursPerDay;
+                break;
+            case "SOEC":
+                daysOfRunTime = soecHoursOfToEndOfLife / hoursPerDay;
+                break;
+            default:
+                break;
+        }
+        return daysOfRunTime/daysPerYear;
+    }
 
     // public Integer calculateBatteryCost(Integer systemWattHoursNeededPerHour, Integer batteryMaxPowerInMw, Integer batteryMaxMwHours, Integer costPerBattery, Integer solarEnergyGenerationInKillowatts){
     //     Integer batteryCost = 0;
@@ -205,6 +222,7 @@ public class SolarService {
     //     return 0;
     // }
 
+    
 
 
 

@@ -33,6 +33,10 @@ public class SolarController {
             // Integer systemBatteryWattageNeeded = (int)(systemPanelWattageNeeded * (1- solarPanelCostrequest.getSolarEfficiency()));
             // Integer batteryCost = solarService.calculateBatteryCost(will possibly have this function by end of semester);
 
+            // Integer electrolyzerLifespanInYears = solarService.calculateElectrolyzerLifespaninYears(solarPanelCostrequest.getTypeOfElectrolyzer());
+
+
+            
             String response = "The different components of the solar hydrogen plant cost are as follows: \n" +
             "Cost of Solar Panels: $" + costOfPanelsIncludingTaxAndTariff + "\n" +
             "Cost of Panel Connections: $" + panelConnectionCostIncludingTaxAndTariff + "\n" +
