@@ -27,7 +27,7 @@ public class SolarService {
     // private Double avgHoursOfDaylight = 8.5;
     // private Double avgPanelEfficiencyDaylight = .55; //Xendee 
     final private Integer daysPerYear = 365;
-    final private Integer hoursPerDay = 24;
+    final private Integer hoursPerDay = 8;// will keep at 8 until battery logic is better implemented that way everything will be based on 8 hours of sunlight.
 
     private Integer kilowattHoursPerKilogramOfPemStack = 51;//(energy.gov)
     private Integer kilowattHoursPerKilogramOfAlkalineStack = 51;//(energy.gov)
@@ -104,7 +104,7 @@ public class SolarService {
         else if (unitOfMeasure.equals("inch")){
          acreage = (int)Math.ceil((panelWidth/(inchInFoot)) * (panelLength/(inchInFoot)) * numberOfPanels)/sqftInAcre;
         };
-
+        // these should be adjusted once someone from industry can provide more accurate numbers or agricultural data.
         switch(synerUse){
             case "crawfish":
                 acreage = (int)(acreage * 1.2);//adds 15% onto land value for passageways (walk and drive) and maintenance routes and minimum needed space for crawfish farming. 
@@ -192,13 +192,18 @@ public class SolarService {
                 break;
         }
         kilowattsPerHourNeeded = (int)Math.ceil(kilowattsPerHourNeeded/uptime);// makes up for the 5% downtime
-        //round up to the nearest whole number representing electrolyzer degradation in one year
-        Double periodsOfDegredationInOneYear = (hoursPerDay * daysPerYear)/1000.0;
-        Double yearsOfOperationPerElectrolyzer = hoursOfRunTime/periodsOfDegredationInOneYear; //before 10% drom in voltage marking end of life.
         Integer NumberOfMegawattElectrolyzersNeeded = (int)Math.ceil(kilowattsPerHourNeeded/1000); // 1 megawatt = 1000 kilowatts
         Integer costOfElectrolyzers = (int)(costPerKw * 1000 * NumberOfMegawattElectrolyzersNeeded);
         return costOfElectrolyzers;
     }
+
+
+    // public Integer calculateBatteryCost(Integer systemWattHoursNeededPerHour, Integer batteryMaxPowerInMw, Integer batteryMaxMwHours, Integer costPerBattery, Integer solarEnergyGenerationInKillowatts){
+    //     Integer batteryCost = 0;
+    //     Integer runtime = 16; //hours a day batteires will be used
+    //     Integer batteryMaxOutputInKw = batteryMaxPowerInMw * 1000;
+    //     return 0;
+    // }
 
 
 

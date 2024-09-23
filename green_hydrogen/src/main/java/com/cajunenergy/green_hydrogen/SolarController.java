@@ -15,23 +15,31 @@ public class SolarController {
     private SolarService solarService;
 
     @PostMapping("/calculate_solar_hydro_plant_cost")
-    public ResponseEntity<Double> calculateSolarHydroPlantCost(@RequestBody SolarPlantCostRequest solarPanelCostrequest) {
+    public ResponseEntity<String> calculateSolarHydroPlantCost(@RequestBody SolarPlantCostRequest solarPanelCostrequest) {
         try {
             Integer systemPanelWattageNeeded = solarService.calculateSolarWattage(solarPanelCostrequest.getGoalKilogramsPerYear(), solarPanelCostrequest.getSolarEfficiency(), solarPanelCostrequest.getTypeOfElectrolyzer());
             Double solarPanelCost = solarService.calculateSolarPanelTotalPrice(solarPanelCostrequest.getCostPerWattSolar(), systemPanelWattageNeeded);
             Double taxAndTariff = solarService.addTaxAndTariff(solarPanelCostrequest.getCountryOfOrigin());
-            Double panelCostOfPanelsIncludingTaxAndTariff = (1 + taxAndTariff) * solarPanelCost;
+            Double costOfPanelsIncludingTaxAndTariff = (1 + taxAndTariff) * solarPanelCost;
             Integer numberOfPanels = solarService.calculateNumberOfPanels(solarPanelCostrequest.getWattsPerPanel(), systemPanelWattageNeeded);
             Integer numberOfConnections = numberOfPanels;
             Integer panelConnectionCost = numberOfConnections * solarPanelCostrequest.getCostPerPanelConnection().intValue();
             Integer panelConnectionCostIncludingTaxAndTariff = (int)((1 + taxAndTariff) * panelConnectionCost);
             Integer acreage = solarService.calculateNeededSpaceForSolar(solarPanelCostrequest.getWidthOfPanel().intValue(), solarPanelCostrequest.getLengthOfPanel().intValue(), numberOfPanels, solarPanelCostrequest.getUnitOfMeasure(), solarPanelCostrequest.getSynerUse());
             Integer totalAcreageCost = acreage * solarPanelCostrequest.getPricePerAcre();
-            Integer systemBatteryWattageNeeded = (int)(systemPanelWattageNeeded * (1- solarPanelCostrequest.getSolarEfficiency()));
-            Integer batteryCost = solarService.calculateBatteryCost();
+            Integer electrolyzerCosts = solarService.calculateElectrolyzerCost(solarPanelCostrequest.getTypeOfElectrolyzer(), solarPanelCostrequest.getGoalKilogramsPerYear());
+            Double costOfElectrolyzersIncludingTaxAndTariff = (1 + taxAndTariff) * electrolyzerCosts;
+            Double totalCost = costOfPanelsIncludingTaxAndTariff + panelConnectionCostIncludingTaxAndTariff + totalAcreageCost + costOfElectrolyzersIncludingTaxAndTariff;
+            // Integer systemBatteryWattageNeeded = (int)(systemPanelWattageNeeded * (1- solarPanelCostrequest.getSolarEfficiency()));
+            // Integer batteryCost = solarService.calculateBatteryCost(will possibly have this function by end of semester);
 
-            
-            return ResponseEntity.ok(45.0);//change the argument with proper value later.
+            String response = "The different components of the solar hydrogen plant cost are as follows: \n" +
+            "Cost of Solar Panels: $" + costOfPanelsIncludingTaxAndTariff + "\n" +
+            "Cost of Panel Connections: $" + panelConnectionCostIncludingTaxAndTariff + "\n" +
+            "Cost of Acreage: $" + totalAcreageCost + "\n" +
+            "Cost of Electrolyzers: $" + costOfElectrolyzersIncludingTaxAndTariff + "\n" +
+            "Total Cost: $" + totalCost;
+            return ResponseEntity.ok(response);//change the argument with proper value later.
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
