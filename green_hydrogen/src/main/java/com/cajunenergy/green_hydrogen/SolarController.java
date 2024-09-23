@@ -17,16 +17,18 @@ public class SolarController {
     @PostMapping("/calculate_solar_hydro_plant_cost")
     public ResponseEntity<Double> calculateSolarHydroPlantCost(@RequestBody SolarPlantCostRequest solarPanelCostrequest) {
         try {
-            Integer systemWattage = solarService.calculateSolarWattage(solarPanelCostrequest.getGoalKilogramsPerYear(), solarPanelCostrequest.getSolarEfficiency(), solarPanelCostrequest.getTypeOfElectrolyzer());
-            Double solarPanelCost = solarService.calculateSolarPanelTotalPrice(solarPanelCostrequest.getCostPerWattSolar(), systemWattage);
+            Integer systemPanelWattageNeeded = solarService.calculateSolarWattage(solarPanelCostrequest.getGoalKilogramsPerYear(), solarPanelCostrequest.getSolarEfficiency(), solarPanelCostrequest.getTypeOfElectrolyzer());
+            Double solarPanelCost = solarService.calculateSolarPanelTotalPrice(solarPanelCostrequest.getCostPerWattSolar(), systemPanelWattageNeeded);
             Double taxAndTariff = solarService.addTaxAndTariff(solarPanelCostrequest.getCountryOfOrigin());
             Double panelCostOfPanelsIncludingTaxAndTariff = (1 + taxAndTariff) * solarPanelCost;
-            Integer numberOfPanels = solarService.calculateNumberOfPanels(solarPanelCostrequest.getWattsPerPanel(), systemWattage);
+            Integer numberOfPanels = solarService.calculateNumberOfPanels(solarPanelCostrequest.getWattsPerPanel(), systemPanelWattageNeeded);
             Integer numberOfConnections = numberOfPanels;
             Integer panelConnectionCost = numberOfConnections * solarPanelCostrequest.getCostPerPanelConnection().intValue();
             Integer panelConnectionCostIncludingTaxAndTariff = (int)((1 + taxAndTariff) * panelConnectionCost);
             Integer acreage = solarService.calculateNeededSpaceForSolar(solarPanelCostrequest.getWidthOfPanel().intValue(), solarPanelCostrequest.getLengthOfPanel().intValue(), numberOfPanels, solarPanelCostrequest.getUnitOfMeasure(), solarPanelCostrequest.getSynerUse());
             Integer totalAcreageCost = acreage * solarPanelCostrequest.getPricePerAcre();
+            Integer systemBatteryWattageNeeded = (int)(systemPanelWattageNeeded * (1- solarPanelCostrequest.getSolarEfficiency()));
+            Integer batteryCost = solarService.calculateBatteryCost();
 
             
             return ResponseEntity.ok(45.0);//change the argument with proper value later.

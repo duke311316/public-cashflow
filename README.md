@@ -65,8 +65,19 @@ Contact
 
 Acknowledgements
 
-	•	University of Louisiana at Lafayette
-	•	Your professors or mentors
+	•	Tiffani Clark for all the support and understanding through all of the last minute changes. 
 	•	Any other supporters or collaborators
 
-This README is structured to give a clear, professional overview of your project while providing all necessary instructions for interested parties to get involved and use the application. When you’re ready, we can proceed with adding JavaDoc comments to your code for better documentation and maintenance.
+Project Evolution: A Shift in Focus
+
+This project began with the ambition of addressing high electricity and utility prices in my hometown of Gueydan, Louisiana. Conversations with my great uncle and his friends sparked the idea of local energy generation for Vermilion Parish, where there had never been a significant local power source. Initially, the goal was grand: a 1 GW green energy power plant fueled by a combination of wind and solar energy. The project would not only supply local energy but also produce green hydrogen to align with the broader governmental push toward sustainable energy.
+
+The vision was ambitious, including plans for a shipping bulkhead at the intercoastal canal to fuel ships and ship hydrogen off to industrial offtakers. However, early research revealed that 99% of industrial energy consumption is driven by natural gas—a potential opportunity for hydrogen in the future, with advancements in material engineering.
+
+With the advice of mentors and a deeper understanding of the challenges involved, I scaled down the project from a 1 GW plant to a 50 MW system. Wind energy was initially removed from the equation as it was deemed unfeasible, only to discover later that it actually provided 31% efficiency—higher than solar in certain cases. This led to a re-evaluation of the project, which pivoted to comparing different models for hydrogen production, all aimed at achieving the lowest cost per kilogram of hydrogen.
+
+What started as a large-scale initiative to revolutionize local energy eventually turned into a focused, practical approach to hydrogen production. In the end, this project’s clarity came not from the grand ambitions of the initial idea, but from the decision to simplify and make use of established data from sources like NREL.gov and Energy.gov.
+
+Although this project has taken various turns and faced setbacks, it is now a useful tool for calculating hydrogen production costs. My hope is that it serves as a functional piece of my senior design project and provides value beyond the classroom. As I continue to dive into emerging research and data, this calculator stands as a foundational step in understanding the practical aspects of green hydrogen production.
+
+This version maintains the flow of your original thoughts while making it more cohesive and formal for the README. Let me know if you’d like any changes or additions!

@@ -1,5 +1,8 @@
 package com.cajunenergy.green_hydrogen;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 class SolarPlantCostRequest{
     private Double costPerWattSolar;
@@ -12,9 +15,13 @@ class SolarPlantCostRequest{
     private Double widthOfPanel;
     private String unitOfMeasure;
     private Integer pricePerAcre;
-    private Integer costPerKilowattElectrolyzer;
+    // private Integer costPerKilowattElectrolyzer;
     private Double costPerPanelConnection;
     private String synerUse;
+    private Double loanInterest;
+    private Integer loanTermInYears;
+    private boolean evenLoanPayments;
+    private List <Double> unevenLoanPayments = new ArrayList<Double>();
 
     // No-arg constructor
     public SolarPlantCostRequest() {
@@ -37,7 +44,7 @@ class SolarPlantCostRequest{
         String synerUse) {
         this.costPerWattSolar = costPerWattSolar;
         this.solarEfficiency = solarEfficiency;
-        this.costPerKilowattElectrolyzer = costPerKilowattElectrolyzer;
+        // this.costPerKilowattElectrolyzer = costPerKilowattElectrolyzer;
         this.typeOfElectrolyzer = typeOfElectrolyzer;
         this.goalKilogramsPerYear = goalKilogramsPerYear;
         this.countryOfOrigin = countryOfOrigin;
@@ -60,9 +67,9 @@ class SolarPlantCostRequest{
         return solarEfficiency;
     }
 
-    public Integer getCostPerKilowattElectrolyzer() {
-        return costPerKilowattElectrolyzer;
-    }
+    // public Integer getCostPerKilowattElectrolyzer() {
+    //     return costPerKilowattElectrolyzer;
+    // }
 
     public String getTypeOfElectrolyzer() {
         return typeOfElectrolyzer;
@@ -85,9 +92,9 @@ class SolarPlantCostRequest{
         this.solarEfficiency = solarEfficiency;
     }
 
-    public void setCostPerKilowattElectrolyzer(Integer costPerKilowattElectrolyzer) {
-        this.costPerKilowattElectrolyzer = costPerKilowattElectrolyzer;
-    }
+    // public void setCostPerKilowattElectrolyzer(Integer costPerKilowattElectrolyzer) {
+    //     this.costPerKilowattElectrolyzer = costPerKilowattElectrolyzer;
+    // }
 
     public void setTypeOfElectrolyzer(String typeOfElectrolyzer) {
         this.typeOfElectrolyzer = typeOfElectrolyzer;
@@ -161,7 +168,7 @@ class SolarPlantCostRequest{
     public String toString() {
         return "SolarPanelCostRequest [costPerWattSolar=" + costPerWattSolar + ", countryOfOrigin=" + countryOfOrigin
                 + ", goalKilogramsPerYear=" + goalKilogramsPerYear + ", solarEfficiency=" + solarEfficiency
-                + ", typeOfElectrolyzer=" + typeOfElectrolyzer + ", wattsPerPanel=" + wattsPerPanel +  ", lengthOfPanel=" + lengthOfPanel + ", widthOfPanel=" + widthOfPanel + ", unitOfMeasure=" + unitOfMeasure + ", pricePerAcre=" + pricePerAcre + ", costPerKilowattElectrolyzer=" + costPerKilowattElectrolyzer + ", costPerPanelConnection=" + costPerPanelConnection + ", synerUse=" + synerUse + "]";
+                + ", typeOfElectrolyzer=" + typeOfElectrolyzer + ", wattsPerPanel=" + wattsPerPanel +  ", lengthOfPanel=" + lengthOfPanel + ", widthOfPanel=" + widthOfPanel + ", unitOfMeasure=" + unitOfMeasure + ", pricePerAcre=" + pricePerAcre + ", costPerPanelConnection=" + costPerPanelConnection + ", synerUse=" + synerUse + "]";
     }
 
 }

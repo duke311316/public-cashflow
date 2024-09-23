@@ -1,15 +1,21 @@
 package com.cajunenergy.green_hydrogen;
 
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.ArrayList;
 
+/** SolarService
+ * This class contains methods to calculate the cost of solar panels and electrolyzers.
+ * The methods calculate the wattage needed for solar panels, the number of panels needed, the total price of solar panels, the space needed for solar panels, the cost of land, and the cost of electrolyzers.
+ */
 @Service
 public class SolarService {
 
     // Degradation rates of solar panels and electrolyzers 
     // final private Double monoPanelDegradeRate = .005; //.5 % per year
-    final private Double soecDegradeRate = .5; //50% per year (energy.gov);
-    final private Double pemDegradeRate = .25; //25% per year (energy.gov);
-    final private Double alkalineDegradeRate = .17; //17% per year (energy.gov); 
+    final private Double soecDegradeRate = .5; //.5% per 1000 hours (energy.gov);
+    final private Double pemDegradeRate = .25; //.25% per 1000 hours (energy.gov);
+    final private Double alkalineDegradeRate = .17; //.17% per 1000 hours (energy.gov); 
     final private Integer pemHoursToEndOfLife = 40000;//energy.gov
     final private Integer soecHoursOfToEndOfLife = 20000;//energy.gov
     //www.energy.gov/eere/fuelcells/technical-targets-liquid-alkaline-electrolysis
@@ -33,7 +39,13 @@ public class SolarService {
     private Double hydrogenDemanGrowthProjection = 1.05; // 5 percent year over year
     final private Double uptime = .95;
 
-    
+    /**
+     * calculateSolarWattage
+     * @param goalKilogramsPerYear
+     * @param avgPanelEfficiencyPerDay
+     * @param typeOfElectrolyzer
+     * @return
+     */
     public Integer calculateSolarWattage (Integer goalKilogramsPerYear, Double avgPanelEfficiencyPerDay, String typeOfElectrolyzer){
         Integer yearlyKilowattHoursNeeded = 0;
         switch(typeOfElectrolyzer){
@@ -55,14 +67,35 @@ public class SolarService {
         return systemWattage;
     }
 
+    /**
+     * calculateNumberOfPanels
+     * @param wattsPerPanel
+     * @param systemDailyWattageNeeds
+     * @return Integer number of panels needed
+     */
     public Integer calculateNumberOfPanels(Integer wattsPerPanel, Integer systemDailyWattageNeeds){
         return systemDailyWattageNeeds/wattsPerPanel;
     }
 
+    /**
+     * calculateSolarPanelTotalPrice
+     * @param pricePerWatt
+     * @param dailywattageNeeds
+     * @return Double total price of solar panels
+     */
     public Double calculateSolarPanelTotalPrice(Double pricePerWatt, Integer dailywattageNeeds){
         return (dailywattageNeeds * pricePerWatt);
     }
 
+    /**
+     * calculateNeededSpaceForSolar
+     * @param panelWidth 
+     * @param panelLength
+     * @param numberOfPanels
+     * @param unitOfMeasure (mm, inch)
+     * @param synerUse type of land use (crawfish, crawfish and rice, cattle)
+     * @return Integer acreage needed for solar panels
+     */
     public Integer calculateNeededSpaceForSolar (Integer panelWidth, Integer panelLength, Integer numberOfPanels, String unitOfMeasure, String synerUse){
         Integer acreage = 0;
         if(unitOfMeasure.equals("mm")){
@@ -88,10 +121,21 @@ public class SolarService {
         return acreage;
     }
 
+    /**
+     * calculateLandCost
+     * @param acreage
+     * @param pricePerAcre
+     * @return Integer cost of land
+     */
     public Integer calculateLandCost(Double acreage, Double pricePerAcre){
         return (int)(acreage * pricePerAcre);
     }
 
+    /**
+     * addTaxAndTariff
+     * @param countryOfOrigin
+     * @return Double percentage of tax and tariff
+     */
     public Double addTaxAndTariff(String countryOfOrigin){
         Double percentage = 0.0;
         switch (countryOfOrigin) {
@@ -108,40 +152,55 @@ public class SolarService {
         return percentage;
     }
 
-    public Integer calculateElectrolyzerCost(String typeOfElectrolyzer, Integer goalKilogramPerYear){
+    /**
+     * calculateElectrolyzerCost
+     * @param typeOfElectrolyzer
+     * @param goalKilogramInFirstYear
+     * @param loanInterest
+     * @param loanTermInYears
+     * @param evenLoanPayments
+     * @param unevenLoanPayments
+     * @return Integer cost of electrolyzers 
+     */
+    public Integer calculateElectrolyzerCost(String typeOfElectrolyzer, Integer goalKilogramInFirstYear){
         Integer costPerKw = 0;
-        Integer goalKilogramsPerHour = goalKilogramPerYear/(daysPerYear * hoursPerDay);
+        Integer goalKilogramsPerHour = goalKilogramInFirstYear/(daysPerYear * hoursPerDay);
         Integer kilowattsPerHourNeeded = 0;
-        Double degradationRate = 0.0;
+        // Double degradationRatePer1000Hours = 0.0;
         Integer hoursOfRunTime = 0;
         
-
         switch(typeOfElectrolyzer){
             case "PEM":
                 costPerKw = costPemElecPerKw;
-                degradationRate = pemDegradeRate;
+                // degradationRatePer1000Hours = pemDegradeRate;
                 kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfPemStack;
                 hoursOfRunTime = pemHoursToEndOfLife;
                 break;
             case "Alkaline":
                 costPerKw = costAlkaElecPerKw;
-                degradationRate = alkalineDegradeRate;
+                // degradationRatePer1000Hours = alkalineDegradeRate;
                 kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfAlkalineStack;
                 hoursOfRunTime = alkalineHoursToEndOfLife;
                 break;
             case "SOEC":
                 costPerKw = costSoecElecPerKw;
-                degradationRate = soecDegradeRate;
+                // degradationRatePer1000Hours = soecDegradeRate;
                 kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfSoecStack;
                 hoursOfRunTime = soecHoursOfToEndOfLife;
                 break;
             default:
                 break;
         }
-        
-        
-        return null;
+        kilowattsPerHourNeeded = (int)Math.ceil(kilowattsPerHourNeeded/uptime);// makes up for the 5% downtime
+        //round up to the nearest whole number representing electrolyzer degradation in one year
+        Double periodsOfDegredationInOneYear = (hoursPerDay * daysPerYear)/1000.0;
+        Double yearsOfOperationPerElectrolyzer = hoursOfRunTime/periodsOfDegredationInOneYear; //before 10% drom in voltage marking end of life.
+        Integer NumberOfMegawattElectrolyzersNeeded = (int)Math.ceil(kilowattsPerHourNeeded/1000); // 1 megawatt = 1000 kilowatts
+        Integer costOfElectrolyzers = (int)(costPerKw * 1000 * NumberOfMegawattElectrolyzersNeeded);
+        return costOfElectrolyzers;
     }
+
+
 
 
 }
