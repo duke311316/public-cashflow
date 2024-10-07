@@ -128,6 +128,7 @@ export default function CalculateSolarCost() {
           <label>Unit of Measure:</label>
           <select
             name="unitOfMeasure"
+            
             value={formData.unitOfMeasure}
             onChange={handleChange}
           >
@@ -160,9 +161,9 @@ export default function CalculateSolarCost() {
             value={formData.synerUse}
             onChange={handleChange}
           >
-            <option value="crawfish">Crawfish</option>
-            <option value="crawfish and rice">Crawfish and Rice</option>
-            <option value="cattle">Cattle</option>
+            <option value="Crawfish">Crawfish</option>
+            <option value="Crawfish and Rice">Crawfish and Rice</option>
+            <option value="Cattle">Cattle</option>
           </select>
         </div>
         <button type="submit">Calculate</button>
