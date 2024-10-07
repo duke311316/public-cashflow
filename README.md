@@ -79,5 +79,3 @@ With the advice of mentors and a deeper understanding of the challenges involved
 What started as a large-scale initiative to revolutionize local energy eventually turned into a focused, practical approach to hydrogen production. In the end, this project’s clarity came not from the grand ambitions of the initial idea, but from the decision to simplify and make use of established data from sources like NREL.gov and Energy.gov.
 
 Although this project has taken various turns and faced setbacks, it is now a useful tool for calculating hydrogen production costs. My hope is that it serves as a functional piece of my senior design project and provides value beyond the classroom. As I continue to dive into emerging research and data, this calculator stands as a foundational step in understanding the practical aspects of green hydrogen production.
-
-This version maintains the flow of your original thoughts while making it more cohesive and formal for the README. Let me know if you’d like any changes or additions!
