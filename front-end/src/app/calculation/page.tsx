@@ -3,6 +3,8 @@
 
 import { useState } from 'react';
 import { calculateSolarHydroPlantCost, SolarPlantCostRequest } from '../services/api';
+import FlurDesLee from './flurdeslee/flurdeslee';
+
 
 export default function CalculateSolarCost() {
   const [formData, setFormData] = useState<SolarPlantCostRequest>({
@@ -44,8 +46,19 @@ export default function CalculateSolarCost() {
   };
 
   return (
-    <div className="container">
-      <h1>Calculate Solar Hydrogen Plant Cost</h1>
+    <div >
+      <div 
+      className = "header-container"
+      >
+        <div className = "flurdeslee-container">
+          <FlurDesLee/>
+        </div>
+        
+        <h1>Calculate Solar Hydrogen Plant Cost</h1>
+      </div>
+      
+      <div className = "main-container">
+      <div className = "inside-container">
       <form onSubmit={handleSubmit}>
         <div>
           <label>Cost Per Watt Solar:</label>
@@ -128,7 +141,6 @@ export default function CalculateSolarCost() {
           <label>Unit of Measure:</label>
           <select
             name="unitOfMeasure"
-            
             value={formData.unitOfMeasure}
             onChange={handleChange}
           >
@@ -168,8 +180,9 @@ export default function CalculateSolarCost() {
         </div>
         <button type="submit">Calculate</button>
       </form>
-      
-      {result && (
+      </div>
+      <div className = "inside-container">
+        {result && (
         <div className="results">
           <h2>Results</h2>
           {result.split('\n').map((line, index) => (
@@ -184,21 +197,48 @@ export default function CalculateSolarCost() {
           <p>{error}</p>
         </div>
       )}
+      </div>
+      </div>
 
       <style jsx>{`
-        .container {
+        .main-container {
           padding: 20px;
+          background-color: rgb(180, 10, 10);
+          color: white;
+          display:flex;
+          flex-direction: row;
+          height: 80vh;
         }
         form div {
           margin-bottom: 10px;
         }
         .results {
-          margin-top: 20px;
+          margin-top: .5rem;
+          max-height: 80vh;
         }
         .result-box {
           border: 1px solid #ccc;
           padding: 10px;
-          margin: 5px 0;
+          margin: .4rem;
+        }
+        .flurdeslee-container{
+          width: 8rem;
+          height: auto;
+          }
+        .header-container{
+        display: flex;
+        flex-direction: row;
+        background-color: rgb(180, 10, 10);
+        border-bottom: 1px solid #ccc;
+        border-top: 5px solid #rgb(126,126,126);
+        color: white;
+        align-items: center;
+        }
+        .inside-container{
+          width: 50%;
+          align-items: center;
+          justify-content: center;
+          
         }
         .error {
           color: red;

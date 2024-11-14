@@ -1,0 +1,11 @@
+.inside-container{
+    width: 50%;
+    height: 80vh;
+    background-color: rgb(180, 10, 10);
+    background-color: gray;
+
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    
+}

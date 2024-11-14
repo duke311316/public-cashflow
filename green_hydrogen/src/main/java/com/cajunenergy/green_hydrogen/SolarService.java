@@ -27,10 +27,14 @@ public class SolarService {
     private Integer costAlkaElecPerKw = 250;
     private Integer costPemElecPerKw = 450;
     private Integer costSoecElecPerKw = 300;
+    // private Double alkalineEfficiency = .61;
+    // private Double pemEfficiency = .65;
+    // private Double soecEfficiency = .99;
+
     // private Double avgHoursOfDaylight = 8.5;
     // private Double avgPanelEfficiencyDaylight = .55; //Xendee 
     final private Integer daysPerYear = 365;
-    final private Integer hoursPerDay = 8;// will keep at 8 until battery logic is better implemented that way everything will be based on 8 hours of sunlight.
+    final private Integer hoursPerDay = 24;// will keep at 8 until battery logic is better implemented that way everything will be based on 8 hours of sunlight.
 
     private Integer kilowattHoursPerKilogramOfPemStack = 51;//(energy.gov)
     private Integer kilowattHoursPerKilogramOfAlkalineStack = 51;//(energy.gov)
@@ -47,45 +51,55 @@ public class SolarService {
      * @param typeOfElectrolyzer
      * @return
      */
-    public Integer calculateSolarWattage (Integer goalKilogramsPerYear, Double avgPanelEfficiencyPerDay, String typeOfElectrolyzer){
-        Integer yearlyKilowattHoursNeeded = 0;
+    public Long calculateSolarWattage (Integer goalKilogramsPerYear, Double avgPanelEfficiencyPerDay, String typeOfElectrolyzer){
+        Integer yearlyKilowattHoursNeeded;
         switch(typeOfElectrolyzer){
             case "PEM":
-                yearlyKilowattHoursNeeded = (goalKilogramsPerYear * kilowattHoursPerKilogramOfPemStack);
+                yearlyKilowattHoursNeeded = (int)((goalKilogramsPerYear * kilowattHoursPerKilogramOfPemStack));
                 break;
             case "Alkaline":
-                yearlyKilowattHoursNeeded = (goalKilogramsPerYear * kilowattHoursPerKilogramOfAlkalineStack);
+                yearlyKilowattHoursNeeded = (int)((goalKilogramsPerYear * kilowattHoursPerKilogramOfAlkalineStack));
                 break;
             case "SOEC":
-                yearlyKilowattHoursNeeded = (goalKilogramsPerYear * kilowattHoursPerKilogramOfSoecStack);
+                yearlyKilowattHoursNeeded = (int)((goalKilogramsPerYear * kilowattHoursPerKilogramOfSoecStack));
                 break;
             default:
+                yearlyKilowattHoursNeeded = 0;
                 break;
         }
-        Integer dailyKilowattHoursNeeded = yearlyKilowattHoursNeeded/daysPerYear;
-        Integer dailyKilowattHoursNeededAdjustedForEfficiency = (int)(dailyKilowattHoursNeeded/(avgPanelEfficiencyPerDay));
-        Integer systemWattage =  (dailyKilowattHoursNeededAdjustedForEfficiency * 1000)/24;
+        // if (typeOfElectrolyzer.equals("PEM")) {
+        //     yearlyKilowattHoursNeeded = (int)(goalKilogramsPerYear * kilowattHoursPerKilogramOfPemStack);
+        // } else if (typeOfElectrolyzer.equals("Alkaline")) {
+        //     yearlyKilowattHoursNeeded = (int)(goalKilogramsPerYear * kilowattHoursPerKilogramOfAlkalineStack);
+        // } else if (typeOfElectrolyzer.equals("SOEC")) {
+        //     yearlyKilowattHoursNeeded = (int)(goalKilogramsPerYear * kilowattHoursPerKilogramOfSoecStack);
+        // }
+        double dailyKilowattHoursNeeded = (double)yearlyKilowattHoursNeeded/daysPerYear;
+        System.out.println("Daily Kilowatt Hours Needed: " + dailyKilowattHoursNeeded);
+        Double dailyKilowattHoursNeededAdjustedForEfficiency = dailyKilowattHoursNeeded/(avgPanelEfficiencyPerDay);
+        System.out.println("Daily Kilowatt Hours Needed: " + dailyKilowattHoursNeededAdjustedForEfficiency);
+        Long systemWattage =  (long) ((dailyKilowattHoursNeededAdjustedForEfficiency * 1000)/24);
         return systemWattage;
     }
 
     /**
      * calculateNumberOfPanels
      * @param wattsPerPanel
-     * @param systemDailyWattageNeeds
+     * @param systemWattageNeeds
      * @return Integer number of panels needed
      */
-    public Integer calculateNumberOfPanels(Integer wattsPerPanel, Integer systemWattageNeeds){
-        return systemWattageNeeds/wattsPerPanel;
+    public Integer calculateNumberOfPanels(Integer wattsPerPanel, Long systemWattageNeeds){
+        return (int) (systemWattageNeeds/wattsPerPanel);
     }
 
     /**
      * calculateSolarPanelTotalPrice
      * @param pricePerWatt
-     * @param dailywattageNeeds
+     * @param wattageNeeds
      * @return Double total price of solar panels
      */
-    public Double calculateSolarPanelTotalPrice(Double pricePerWatt, Integer dailywattageNeeds){
-        return (dailywattageNeeds * pricePerWatt);
+    public Double calculateSolarPanelTotalPrice(Double pricePerWatt, Long wattageNeeds){
+        return (wattageNeeds * pricePerWatt);
     }
 
     /**
@@ -126,7 +140,7 @@ public class SolarService {
             acreage = (int)Math.ceil(acreage * 1.2);
         }
         else if (synerUse.equals("Crawfish and Rice")){
-            acreage = (int)Math.ceil(acreage * 1.75);
+            acreage = (int)Math.ceil(acreage * 2.0);
         }
         else if (synerUse.equals("Cattle")){
             acreage = (int)Math.ceil(acreage * 1.4);
@@ -181,40 +195,40 @@ public class SolarService {
         Integer kilowattsPerHourNeeded = 0;
         // Double degradationRatePer1000Hours = 0.0;
         // Integer hoursOfRunTime = 0;
-        // switch(typeOfElectrolyzer){
-        //     case "PEM":
-        //         costPerKw = costPemElecPerKw;
-        //         // degradationRatePer1000Hours = pemDegradeRate;
-        //         kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfPemStack;
-        //         // hoursOfRunTime = pemHoursToEndOfLife;
-        //         break;
-        //     case "Alkaline":
-        //         costPerKw = costAlkaElecPerKw;
-        //         // degradationRatePer1000Hours = alkalineDegradeRate;
-        //         kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfAlkalineStack;
-        //         // hoursOfRunTime = alkalineHoursToEndOfLife;
-        //         break;
-        //     case "SOEC":
-        //         costPerKw = costSoecElecPerKw;
-        //         // degradationRatePer1000Hours = soecDegradeRate;
-        //         kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfSoecStack;
-        //         // hoursOfRunTime = soecHoursOfToEndOfLife;
-        //         break;
-        //     default:
-        //         break;
+        switch(typeOfElectrolyzer){
+            case "PEM":
+                costPerKw = costPemElecPerKw;
+                // degradationRatePer1000Hours = pemDegradeRate;
+                kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfPemStack;
+                // hoursOfRunTime = pemHoursToEndOfLife;
+                break;
+            case "Alkaline":
+                costPerKw = costAlkaElecPerKw;
+                // degradationRatePer1000Hours = alkalineDegradeRate;
+                kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfAlkalineStack;
+                // hoursOfRunTime = alkalineHoursToEndOfLife;
+                break;
+            case "SOEC":
+                costPerKw = costSoecElecPerKw;
+                // degradationRatePer1000Hours = soecDegradeRate;
+                kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfSoecStack;
+                // hoursOfRunTime = soecHoursOfToEndOfLife;
+                break;
+            default:
+                break;
+        }
+        // if(typeOfElectrolyzer.equals("PEM")){
+        //     costPerKw = costPemElecPerKw;
+        //     kilowattsPerHourNeeded = (goalKilogramsPerHour * kilowattHoursPerKilogramOfPemStack);
         // }
-        if(typeOfElectrolyzer.equals("PEM")){
-            costPerKw = costPemElecPerKw;
-            kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfPemStack;
-        }
-        else if(typeOfElectrolyzer.equals("Alkaline")){
-            costPerKw = costAlkaElecPerKw;
-            kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfAlkalineStack;
-        }
-        else if(typeOfElectrolyzer.equals("SOEC")){
-            costPerKw = costSoecElecPerKw;
-            kilowattsPerHourNeeded = goalKilogramsPerHour * kilowattHoursPerKilogramOfSoecStack;
-        }
+        // else if(typeOfElectrolyzer.equals("Alkaline")){
+        //     costPerKw = costAlkaElecPerKw;
+        //     kilowattsPerHourNeeded = (goalKilogramsPerHour * kilowattHoursPerKilogramOfAlkalineStack);
+        // }
+        // else if(typeOfElectrolyzer.equals("SOEC")){
+        //     costPerKw = costSoecElecPerKw;
+        //     kilowattsPerHourNeeded = (goalKilogramsPerHour * kilowattHoursPerKilogramOfSoecStack);
+        // }
         kilowattsPerHourNeeded = (int)Math.ceil(kilowattsPerHourNeeded/uptime);// makes up for the 5% downtime
         Integer NumberOfMegawattElectrolyzersNeeded = (int)Math.ceil(kilowattsPerHourNeeded/1000); // 1 megawatt = 1000 kilowatts
         Integer costOfElectrolyzers = (int)(costPerKw * 1000 * NumberOfMegawattElectrolyzersNeeded);
@@ -264,7 +278,9 @@ public class SolarService {
 
     public String calculateSolarHydroPlantCost(@RequestBody SolarPlantCostRequest solarPanelCostrequest) {
         try {
-            Integer systemPanelWattageNeeded = calculateSolarWattage(solarPanelCostrequest.getGoalKilogramsPerYear(), solarPanelCostrequest.getSolarEfficiency(), solarPanelCostrequest.getTypeOfElectrolyzer());
+            Long systemPanelWattageNeeded = calculateSolarWattage(solarPanelCostrequest.getGoalKilogramsPerYear(), solarPanelCostrequest.getSolarEfficiency(), solarPanelCostrequest.getTypeOfElectrolyzer());
+            System.out.println("solar panel efficiency: " + solarPanelCostrequest.getSolarEfficiency());
+            System.out.println("System Panel Wattage Needed: " + systemPanelWattageNeeded);
             Double solarPanelCost = calculateSolarPanelTotalPrice(solarPanelCostrequest.getCostPerWattSolar(), systemPanelWattageNeeded);
             Double taxAndTariff = addTaxAndTariff(solarPanelCostrequest.getCountryOfOrigin());
             Double costOfPanelsIncludingTaxAndTariff = (1 + taxAndTariff) * solarPanelCost;
